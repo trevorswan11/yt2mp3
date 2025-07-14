@@ -2,10 +2,7 @@
 
 .zig-cache/
 zig-out/
-
-reference/
-test_dir/
-update.bat
+assets/
 
 release/targets
 release/compressed
