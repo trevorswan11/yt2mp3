@@ -2,7 +2,7 @@
 A simple YouTube to mp3 converter.
 
 ## Building the Binaries
-First, unpack the `assets.zip` file into the main project directory. You must have the file structure `assets/ffmpeg` and `assets/yt-dlp` available from the project's build directory. Then, simply run `zig build --release` to build all targets. This will output binaries for Windows, Linux (x64), Macos (arm64) and Macos (x64) to `zig-out/bin`. This is compute heavy, and you may only want to build one binary for your platform. In that case, you should run one of the following:
+First, unpack the `assets.zacx` file into the main project directory. To decompress this, you must use [zlx](https://github.com/trevorswan11/zlx)'s dearchive tool by passing the `-da` flag before the filepath. You must have the file structure `assets/ffmpeg` and `assets/yt-dlp` available from the project's build directory. Then, simply run `zig build --release` to build all targets. This will output binaries for Windows, Linux (x64), Macos (arm64) and Macos (x64) to `zig-out/bin`. This is compute heavy, and you may only want to build one binary for your platform. In that case, you should run one of the following:
 - `zig build --release windows` will build for the standard x86_64 Win32 API
 - `zig build --release linux` will build for x86_64 architectures for Linux distros
 - `zig build --release macos-arm` will build for the Apple Silicon architecture
