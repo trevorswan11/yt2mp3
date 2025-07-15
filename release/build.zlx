@@ -7,9 +7,10 @@ import time;
 
 import array_list;
 
-const version = "0.6.1";
+const version = "1.0.0";
 const target_path = path.join("release", "targets");
 const compressed_path = path.join("release", "compressed");
+const zig_prefix = "zig-out/bin";
 // sys.run("zig build --release");
 
 if fs.exists(target_path) {
@@ -23,12 +24,25 @@ if fs.exists(compressed_path) {
 fs.mkdir(compressed_path);
 
 let targets = new array_list();
-for exe in fs.ls("zig-out/bin") {
+for exe in fs.ls(zig_prefix) {
     const stem = path.stem(exe);
-    const current_target = path.join(target_path, stem);
+    const current_target = path.join(target_path, format("{}-{}", stem, version));
     fs.mkdir(current_target);
     targets.push(current_target);
-    fs.copy("README.md", current_target);
-    fs.copy("CHANGELOG.md", current_target);
-    fs.copy("LICENSE.md", current_target);
+    fs.copy("README.md", path.join(current_target, "README.md"));
+    fs.copy("CHANGELOG.md", path.join(current_target, "CHANGELOG.md"));
+    fs.copy("LICENSE", path.join(current_target, "LICENSE"));
+    if (string.ends_with(exe, ".exe")) {
+        fs.copy(path.join(zig_prefix, exe), path.join(current_target, "yt2mp3.exe"));
+    } else {
+        fs.copy(path.join(zig_prefix, exe), path.join(current_target, "yt2mp3"));
+    }
+}
+
+for compiled, idx in fs.ls(target_path) {
+    let compiled_name = path.basename(compiled);
+    let start_compression = time.millis();
+    _ = sys.run(format("tar -cvf {}.tar -C {} .", path.join(compressed_path, compiled_name), path.join(target_path, compiled_name)));
+    let end_compression = time.millis();
+    println(format("Compression {} took {} ms", idx + 1, end_compression - start_compression));
 }
