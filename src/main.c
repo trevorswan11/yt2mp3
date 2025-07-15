@@ -141,7 +141,7 @@ int main(int argc, char **argv) {
     int code = system(command);
 #else
     snprintf(command, sizeof(command),
-             "./%s -x --audio-format mp3 --audio-quality 192K --ffmpeg-location ./%s --output %%(title)s.%%(ext)s \"%s\"",
+             "/%s -x --audio-format mp3 --audio-quality 192K --ffmpeg-location /%s --output \"%%(title)s.%%(ext)s\" \"%s\"",
              yt_dlp_path, ffmpeg_path, url);
 
     if (verbose) {
