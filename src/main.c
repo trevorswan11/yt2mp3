@@ -2,17 +2,17 @@
 #define _GNU_SOURCE
 #endif
 
+#include <errno.h>
+#include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <errno.h>
-#include <signal.h>
 
 #ifdef _WIN32
-#include <windows.h>
 #include "../assets/ffmpeg/ffmpeg_win.h"
 #include "../assets/yt-dlp/yt-dlp_win.h"
+#include <windows.h>
 #define ffmpeg_data ffmpeg_win
 #define ffmpeg_len ffmpeg_win_len
 #define yt_dlp_data yt_dlp_win
@@ -23,11 +23,11 @@
 #define SHELL_ARG "/C"
 #define PATH_SEP "\\"
 #else
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/stat.h>
 #include "../assets/ffmpeg/ffmpeg_linux.h"
 #include "../assets/yt-dlp/yt-dlp_linux.h"
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #define ffmpeg_data ffmpeg_linux
 #define ffmpeg_len ffmpeg_linux_len
 #define yt_dlp_data yt_dlp_linux
@@ -131,8 +131,9 @@ int main(int argc, char **argv) {
     char command[4096];
 #ifdef _WIN32
     snprintf(command, sizeof(command),
-        "%s %s \"%s -x --audio-format mp3 --audio-quality 192K --ffmpeg-location %s --output %%(title)s.%%(ext)s \"%s\"\"",
-        SHELL, SHELL_ARG, yt_dlp_path, ffmpeg_path, url);
+             "%s %s \"%s -x --audio-format mp3 --audio-quality 192K "
+             "--ffmpeg-location %s --output %%(title)s.%%(ext)s \"%s\"\"",
+             SHELL, SHELL_ARG, yt_dlp_path, ffmpeg_path, url);
 
     if (verbose) {
         printf("Running: %s\n", command);
@@ -141,14 +142,15 @@ int main(int argc, char **argv) {
     int code = system(command);
 #else
     snprintf(command, sizeof(command),
-             "/%s -x --audio-format mp3 --audio-quality 192K --ffmpeg-location /%s --output \"%%(title)s.%%(ext)s\" \"%s\"",
+             "/%s -x --audio-format mp3 --audio-quality 192K --ffmpeg-location "
+             "/%s --output \"%%(title)s.%%(ext)s\" \"%s\"",
              yt_dlp_path, ffmpeg_path, url);
 
     if (verbose) {
         printf("Running: %s %s '%s'\n", SHELL, SHELL_ARG, command);
     }
 
-    char *argv_exec[] = { SHELL, SHELL_ARG, command, NULL };
+    char *argv_exec[] = {SHELL, SHELL_ARG, command, NULL};
     int code = execvp(SHELL, argv_exec);
     if (code == -1) {
         perror("execvp failed");
